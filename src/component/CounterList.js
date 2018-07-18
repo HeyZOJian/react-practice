@@ -25,7 +25,7 @@ export default class CounterList extends Component {
         let items = this.state.items.concat();
         let idCount = this.state.idCount;
         this.setState({idCount});
-        items.push(<Counter calculateSummary = {this.calculateSummary}/>);
+        items.push({calculateSummary:this.calculateSummary});
         this.setState({items});
     }
 
@@ -34,7 +34,7 @@ export default class CounterList extends Component {
         console.log(this.state.value);
         let items = []
         for(let i = 1;i<=event.target.value;i++){
-            items.push(<Counter calculateSummary = {this.calculateSummary}/>)
+            items.push({calculateSummary:this.calculateSummary})
         }
         this.setState({items});
       }
@@ -57,10 +57,23 @@ export default class CounterList extends Component {
     }
 
     render() {
+        let items = this.state.items;
+        items = items.map((elt, i)=>{      //elt就是我们的todosData的每一项对象
+        
+            return (
+                <Counter 
+                    {...{
+                        calculateSummary:elt.calculateSummary,  //每一个todo都有一个关闭按钮，所以传这个事件过去
+                    }}
+                    key = {i}   //这个别忘了哦，不然会报错，遍历都要加，react内部机制diff算法会用
+                />
+            );
+        });
         return <div>
             <h1>Summary:{this.state.summary}</h1>
             <hr/>
-            {this.state.items}
+            {items}
+            
             <input type="text" value={this.state.value} onChange={this.handleChange} />
             {/* <Button variant="fab" mini color="primary" aria-label="Add" onClick={this.addCounter}>+</Button> */}
             {/* <Button variant="fab" mini color="secondary" aria-label="Cut" onClick={this.removeCounter}>-</Button>    */}
